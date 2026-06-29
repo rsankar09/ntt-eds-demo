@@ -1,3 +1,8 @@
+Important links
+https://docs.da.live/developers/guides/structured-content#working-with-schemas
+
+
+
 Create project using the boilerplate template
 Setup permission at the repo level for editing the config and edit the pages
 Setup the /docs/library
@@ -5,3 +10,111 @@ add /templates
 at the project level configuration add a sheet for library
 and add entry in that for Templates
 Templates https://content.da.live/rsankar09/ntt-eds-demo/docs/library/templates.json
+
+
+Setup Schema for the sturctured content
+
+https://da.live/apps/schema
+
+
+{
+  "$defs": {
+    "InsightCard": {
+      "type": "object",
+      "title": "Insight Card",
+      "required": ["category", "description", "ctaLabel", "ctaLink"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "title": "Category",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "icon": {
+          "type": "string",
+          "title": "Optional Icon",
+          "description": "FontAwesome icon name (e.g., fa-lock)",
+          "default": ""
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "minLength": 10,
+          "maxLength": 300
+        },
+        "ctaLabel": {
+          "type": "string",
+          "title": "CTA Label",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "ctaLink": {
+          "type": "string",
+          "title": "CTA Link",
+          "format": "uri"
+        }
+      }
+    }
+  },
+
+  "type": "object",
+  "title": "Hero With Insights",
+  "required": ["hero", "insights"],
+  "properties": {
+    "hero": {
+      "type": "object",
+      "title": "Hero Metadata",
+      "required": ["title", "subtitle", "backgroundImage", "personImage"],
+      "properties": {
+        "title": {
+          "type": "string",
+          "title": "Hero Title",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "subtitle": {
+          "type": "string",
+          "title": "Hero Subtitle",
+          "maxLength": 400
+        },
+        "backgroundImage": {
+          "type": "string",
+          "title": "Background Image URL",
+          "format": "uri"
+        },
+        "personImage": {
+          "type": "string",
+          "title": "Foreground Person Image URL",
+          "format": "uri"
+        },
+        "gradientOverlay": {
+          "type": "boolean",
+          "title": "Enable Gradient Overlay",
+          "default": true
+        }
+      }
+    },
+
+    "insightsTitle": {
+      "type": "string",
+      "title": "Insights Section Title",
+      "default": "Trending insights"
+    },
+
+    "insights": {
+      "type": "array",
+      "title": "Insight Cards",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/InsightCard"
+      }
+    }
+  }
+}
+
+Edit the app level config and set the structured content editor
+
+https://da.live/config#/rsankar09/ntt-eds-demo/ 
+
+Structured content	/form?nx=sc#	"meta[name=""da-editor""][content=""da-form""]"
