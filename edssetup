@@ -1,0 +1,7 @@
+Create project using the boilerplate template
+Setup permission at the repo level for editing the config and edit the pages
+Setup the /docs/library
+add /templates
+at the project level configuration add a sheet for library
+and add entry in that for Templates
+Templates https://content.da.live/rsankar09/ntt-eds-demo/docs/library/templates.json
