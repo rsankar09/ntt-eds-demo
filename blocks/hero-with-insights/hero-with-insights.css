@@ -143,4 +143,26 @@
     height: 100%;
     object-fit: cover;
   }
+/* PERSON IMAGE CONTAINER */
+.hwi-person {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 45vw; /* matches NTT DATA */
+    display: flex;
+    align-items: flex-start; /* keep head visible */
+    justify-content: flex-end;
+    z-index: 3;
+    overflow: visible; /* allow full head */
+  }
   
+  /* PERSON IMAGE */
+  .hwi-person img {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* prevents cropping */
+    object-position: top right; /* aligns head properly */
+    transform: translateY(0); /* no downward shift */
+  }
+    
