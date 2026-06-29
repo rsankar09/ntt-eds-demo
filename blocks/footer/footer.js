@@ -1,75 +1,117 @@
 export default function decorate(block) {
-  const rows = [...block.children];
-  const data = {};
-
-  rows.forEach((row) => {
-    const p = row.querySelector('p');
-    if (!p) return;
-    const [key, value] = p.textContent.split('|').map((s) => s.trim());
-    data[key.toLowerCase()] = value;
-  });
-
-  const col1 = data.column1.split(',').map(i => i.trim());
-  const col2 = data.column2.split(',').map(i => i.trim());
-  const col3 = data.column3.split(',').map(i => i.trim());
-  const ctas = data.cta.split(',').map(i => i.trim());
-  const legal = data.legal.split(',').map(i => i.trim());
-  const socials = data.social.split(',').map(i => i.trim());
-
   const wrapper = document.createElement('div');
   wrapper.className = 'nttfooter-wrapper';
 
-  // Build columns
-  const nav = document.createElement('div');
-  nav.className = 'nttfooter-columns';
+  /* -------------------------------------------
+     TOP NAVIGATION COLUMNS (About, Insights, Legal)
+     ------------------------------------------- */
+  const columns = document.createElement('div');
+  columns.className = 'nttfooter-columns';
 
-  const makeCol = (items) => {
+  const col1 = [
+    'About us',
+    'Our leaders',
+    'Our partners'
+  ];
+
+  const col2 = [
+    'Insights',
+    'News',
+    'Events'
+  ];
+
+  const col3 = [
+    'Legal and compliance',
+    'Company information',
+    'Report ethical concerns',
+    'DOL Postings'
+  ];
+
+  [col1, col2, col3].forEach(list => {
     const col = document.createElement('div');
     col.className = 'nttfooter-col';
-    items.forEach((item) => {
+    list.forEach(item => {
       const a = document.createElement('a');
       a.href = '#';
       a.textContent = item;
       col.append(a);
     });
-    return col;
-  };
+    columns.append(col);
+  });
 
-  nav.append(makeCol(col1));
-  nav.append(makeCol(col2));
-  nav.append(makeCol(col3));
+  wrapper.append(columns);
 
-  // CTA buttons
+  /* -------------------------------------------
+     CTA BUTTONS (Contact us, Careers)
+     ------------------------------------------- */
   const ctaWrap = document.createElement('div');
   ctaWrap.className = 'nttfooter-cta';
-  ctas.forEach((item) => {
+
+  ['Contact us', 'Careers'].forEach(label => {
     const a = document.createElement('a');
     a.href = '#';
-    a.textContent = item;
+    a.textContent = label;
     a.className = 'nttfooter-cta-btn';
     ctaWrap.append(a);
   });
 
-  // Social icons
+  wrapper.append(ctaWrap);
+
+  /* -------------------------------------------
+     SOCIAL ICONS
+     ------------------------------------------- */
   const socialWrap = document.createElement('div');
   socialWrap.className = 'nttfooter-social';
-  socials.forEach((item) => {
-    const span = document.createElement('span');
-    span.className = 'nttfooter-social-icon';
-    span.textContent = item;
-    socialWrap.append(span);
+
+  ['facebook', 'youtube', 'x', 'instagram', 'linkedin'].forEach(name => {
+    const icon = document.createElement('span');
+    icon.className = `nttfooter-social-icon icon-${name}`;
+    icon.textContent = name;
+    socialWrap.append(icon);
   });
 
-  // Legal links
+  wrapper.append(socialWrap);
+
+  /* -------------------------------------------
+     LEGAL LINKS
+     ------------------------------------------- */
   const legalWrap = document.createElement('div');
   legalWrap.className = 'nttfooter-legal';
-  legal.forEach((item) => {
+
+  [
+    'Terms of use',
+    'Accessibility statement',
+    'Privacy policy',
+    'Cookie policy',
+    'Sitemap',
+    'Do not share my personal information'
+  ].forEach(label => {
     const a = document.createElement('a');
     a.href = '#';
-    a.textContent = item;
+    a.textContent = label;
     legalWrap.append(a);
   });
 
-  wrapper.append(nav, ctaWrap, socialWrap, legalWrap);
+  wrapper.append(legalWrap);
+
+  /* -------------------------------------------
+     LANGUAGE SELECTOR
+     ------------------------------------------- */
+  const lang = document.createElement('div');
+  lang.className = 'nttfooter-language';
+  lang.textContent = 'United States • English';
+  wrapper.append(lang);
+
+  /* -------------------------------------------
+     COPYRIGHT
+     ------------------------------------------- */
+  const copyright = document.createElement('div');
+  copyright.className = 'nttfooter-copy';
+  copyright.textContent = '© 2026 NTT DATA, Inc.';
+  wrapper.append(copyright);
+
+  /* -------------------------------------------
+     Replace block
+     ------------------------------------------- */
   block.replaceChildren(wrapper);
 }
