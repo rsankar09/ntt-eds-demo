@@ -1,10 +1,13 @@
-import { fetchPlaceholders } from '../../scripts/scripts.js';
+// import { fetchPlaceholders } from '../../scripts/scripts.js';
 
 export default async function decorate(block) {
-  const jsonPath = block.dataset.json;
+  const jsonPath = [...block.querySelectorAll('a')].map((a) => a.href);
+  console.log('jsonPath', jsonPath)
+//   const jsonPath = block.dataset.json;
+//   console.log('jsonPath', jsonPath)
   const res = await fetch(jsonPath);
   const { data } = await res.json();
-
+  console.log('data', data)
   const wrapper = document.createElement('div');
   wrapper.className = 'hwi-wrapper';
 
