@@ -1,43 +1,93 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 export default function decorate(block) {
-  const rows = [...block.querySelectorAll('tr')];
+  const rows = [...block.children];
+  const data = {};
 
-  const logoUrl = rows[1]?.cells[0]?.textContent.trim();
-  const navItems = rows[2]?.cells[0]?.textContent.split(',').map(i => i.trim());
-  const lang = rows[3]?.cells[0]?.textContent.trim();
-  const contactUrl = rows[4]?.cells[0]?.textContent.trim();
+  // Read "key | value" from each row
+  rows.forEach((row) => {
+    const p = row.querySelector('p');
+    if (!p) return;
 
-  block.innerHTML = `
-    <div class="header-top">
-      <a href="/en-us/" class="header-logo">
-        <img src="${logoUrl}" alt="NTT DATA Logo">
-      </a>
+    const [key, value] = p.textContent.split('|').map((s) => s.trim());
+    data[key.toLowerCase()] = value;
+  });
 
-      <ul class="header-nav">
-        ${navItems.map(i => `<li>${i}</li>`).join('')}
-      </ul>
+  // Parse nav items
+  const navItems = data.nav.split(',').map((i) => i.trim());
 
-      <div class="header-actions">
-        <span class="header-lang">${lang}</span>
-        <span class="header-search">Search</span>
-        <a href="${contactUrl}" class="header-contact">Contact Us</a>
-        <span class="header-menu">Menu</span>
-      </div>
-    </div>
+  // Build wrapper
+  const wrapper = document.createElement('div');
+  wrapper.className = 'nttheader-wrapper-inner';
 
-    <div class="header-mobile-nav"></div>
-    <div class="header-mega"></div>
-  `;
+  // Logo
+  const logo = document.createElement('a');
+  logo.href = '/en-us/';
+  logo.className = 'ntt-logo';
+  logo.append(createOptimizedPicture(data.logo, 'NTT DATA Logo', false, [{ width: '750' }]));
+
+  // Nav
+  const nav = document.createElement('ul');
+  nav.className = 'ntt-nav';
+  navItems.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    nav.append(li);
+  });
+
+  // Actions
+  const actions = document.createElement('div');
+  actions.className = 'ntt-actions';
+
+  const lang = document.createElement('span');
+  lang.className = 'ntt-lang';
+  lang.textContent = data.lang;
+
+  const search = document.createElement('span');
+  search.className = 'ntt-search';
+  search.textContent = 'Search';
+
+  const contact = document.createElement('a');
+  contact.className = 'ntt-contact';
+  contact.href = data.contact;
+  contact.textContent = 'Contact Us';
+
+  const menu = document.createElement('span');
+  menu.className = 'ntt-menu';
+  menu.textContent = 'Menu';
+
+  actions.append(lang, search, contact, menu);
 
   // Mobile nav
-  const mobileNav = block.querySelector('.header-mobile-nav');
-  navItems.forEach(item => {
+  const mobileNav = document.createElement('div');
+  mobileNav.className = 'ntt-mobile-nav';
+
+  navItems.forEach((item) => {
     const div = document.createElement('div');
-    div.className = 'mobile-item';
+    div.className = 'ntt-mobile-item';
     div.textContent = item;
-    mobileNav.appendChild(div);
+    mobileNav.append(div);
   });
 
-  block.querySelector('.header-menu').addEventListener('click', () => {
+  menu.addEventListener('click', () => {
     mobileNav.classList.toggle('open');
   });
+
+  // Mega menu container
+  const mega = document.createElement('div');
+  mega.className = 'ntt-mega';
+
+  nav.querySelectorAll('li').forEach((li) => {
+    li.addEventListener('mouseenter', () => {
+      mega.classList.add('open');
+      mega.textContent = li.textContent;
+    });
+    li.addEventListener('mouseleave', () => {
+      mega.classList.remove('open');
+    });
+  });
+
+  wrapper.append(logo, nav, actions, mobileNav, mega);
+
+  block.replaceChildren(wrapper);
 }
